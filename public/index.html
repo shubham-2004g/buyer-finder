@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hearth Leads | Find US home decor buyers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+  .logout{font:inherit;font-size:13.5px;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+  .logout:hover{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="mark"></span>Hearth Leads</div>
+  <div class="right">
+    <div class="chips" id="chips"></div>
+    <button class="logout" id="logout" type="button">Log out</button>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="side">
+    <section class="card">
+      <h2>Find buyers</h2>
+      <p class="hint">Search US businesses that buy home decor. Emails are found live through APIs.</p>
+      <label>Business type
+        <select id="keyword">
+          <option>home decor store</option>
+          <option>furniture store</option>
+          <option>interior designer</option>
+          <option>gift shop</option>
+          <option>boutique home goods</option>
+          <option>home staging company</option>
+        </select>
+      </label>
+      <label>City or state
+        <input id="location" list="places" autocomplete="off" placeholder="Click here and pick a US city or state">
+        <datalist id="places">
+          <option value="New York, NY"><option value="Los Angeles, CA"><option value="Chicago, IL">
+          <option value="Houston, TX"><option value="Phoenix, AZ"><option value="Philadelphia, PA">
+          <option value="San Antonio, TX"><option value="San Diego, CA"><option value="Dallas, TX">
+          <option value="Austin, TX"><option value="San Jose, CA"><option value="Jacksonville, FL">
+          <option value="Columbus, OH"><option value="Charlotte, NC"><option value="San Francisco, CA">
+          <option value="Seattle, WA"><option value="Denver, CO"><option value="Boston, MA">
+          <option value="Atlanta, GA"><option value="Miami, FL"><option value="Las Vegas, NV">
+          <option value="Portland, OR"><option value="Nashville, TN"><option value="Washington, DC">
+          <option value="California"><option value="Texas"><option value="Florida"><option value="New York">
+          <option value="Illinois"><option value="Georgia"><option value="Arizona"><option value="Washington">
+        </datalist>
+      </label>
+      <div class="quick">
+        <button type="button" data-city="Austin, TX">Austin, TX</button>
+        <button type="button" data-city="Dallas, TX">Dallas, TX</button>
+        <button type="button" data-city="Los Angeles, CA">Los Angeles, CA</button>
+        <button type="button" data-city="New York, NY">New York, NY</button>
+        <button type="button" data-city="Miami, FL">Miami, FL</button>
+        <button type="button" data-city="Chicago, IL">Chicago, IL</button>
+      </div>
+      <label>Number of results
+        <select id="limit"><option>5</option><option selected>10</option><option>20</option></select>
+      </label>
+      <button class="btn primary" id="searchBtn">Search buyers</button>
+    </section>
+
+    <section class="card" id="composer">
+      <h2>Write your email</h2>
+      <p class="hint">Use <code>{{name}}</code> for the business name and <code>{{contact}}</code> for the person.</p>
+      <label>Subject <input id="subject" value="Wholesale home decor for {{name}}"></label>
+      <label>Message
+        <textarea id="body" rows="8">Hi {{contact}},
+
+I came across {{name}} and think our home decor collection could be a great fit for your customers. We offer wholesale pricing and low minimum orders.
+
+Could I send you our catalog?
+
+Thanks,
+</textarea>
+      </label>
+      <button class="btn primary" id="sendBtn" disabled>Send to 0 selected</button>
+      <p class="hint small">Every email gets your name, address and an unsubscribe line added automatically.</p>
+    </section>
+  </aside>
+
+  <section class="main">
+    <div class="card results">
+      <div class="rhead">
+        <div><h2>Buyers</h2><p class="hint" id="summary">Run a search to see buyers here.</p></div>
+        <label class="all"><input type="checkbox" id="selAll"> Select all with email</label>
+      </div>
+      <div id="state" class="state"></div>
+      <div class="scroll"><table id="tbl" hidden>
+        <thead><tr><th></th><th>Business</th><th>Contact email</th><th>Location</th><th>Mail</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+    </div>
+  </section>
+</main>
+
+<script>
+  // If the session ends, send the user back to the login page
+  const _fetch = window.fetch;
+  window.fetch = async (...a) => {
+    const r = await _fetch(...a);
+    if (r.status === 401) location.href = "/login.html";
+    return r;
+  };
+  document.getElementById("logout").onclick = async () => {
+    await _fetch("/api/logout", { method: "POST" });
+    location.href = "/login.html";
+  };
+</script>
+<script src="app.js"></script>
+</body>
+</html>
